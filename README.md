@@ -1,40 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+NFL Scorigami
+================
 
-## Getting Started
+* [Overview](#overview)
+* [Features](#features)
+* [Technical Details](#technical-details)
+* [Setup](#setup)
+* [Usage](#usage)
 
-First, run the development server:
+## Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+NFL Scorigami is a web application that tracks unique NFL scores, also known as "scorigami." Scorigami is a concept thought up by Jon Bois, referring to a score that has never been seen before in NFL history. This application fetches the latest scorigami data from Pro-Football-Reference and tweets it from [@NFLScorigamiBot](https://x.com/NFLScorigamiBot).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#### Visit the website at: https://nfl-scorigami.vercel.app
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+## Features
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+* Fetches the latest scorigami data from Pro-Football-Reference
+* Tweets new scorigami scores from the [@NFLScorigamiBot](https://x.com/NFLScorigamiBot) Twitter account
+* Stores historical scorigami data in a database
+* Provides a user interface to fetch the latest scorigami data
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+## Technical Details
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The application is built using Next.js and uses the following technologies:
 
-## Learn More
+* **Frontend**: Next.js, React
+* **Backend**: Next.js API routes
+* **Database**: MongoDB (using Mongoose for ORM)
+* **Twitter API**: Twitter-api-v2 library for interacting with the Twitter API
+* **Web Scraping**: JSDOM for parsing HTML data from Pro-Football-Reference
 
-To learn more about Next.js, take a look at the following resources:
+The application consists of three main files:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+* `index.js`: The frontend component that allows users to fetch the latest scorigami data
+* `scorigami.js`: The API route that handles fetching scorigami data and tweeting new scores
+* `fbref.js`: The utility file that handles web scraping and data processing for Pro-Football-Reference
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Setup
 
-## Deploy on Vercel
+To set up the application, follow these steps:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Clone the repository: `git clone https://github.com/omarabdiwali/nfl-scorigami.git`
+2. Install dependencies: `npm install`
+3. Create a `.env` file with the following environment variables:
+	* `API_KEY`: Twitter API key
+	* `API_KEY_SECRET`: Twitter API key secret
+	* `ACCESS_TOKEN`: Twitter access token
+	* `ACCESS_TOKEN_SECRET`: Twitter access token secret
+	* `MONGODB_URI`: MongoDB connection string
+4. Start the application: `npm run dev`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+## Usage
+
+To use the application, follow these steps:
+
+1. Open the application in a web browser: `http://localhost:3000`
+2. Click the "Fetch Scorigami Data" button to fetch the latest scorigami data
+3. The application will display the latest scorigami data and tweet new scores from [@NFLScorigamiBot](https://x.com/NFLScorigamiBot)
