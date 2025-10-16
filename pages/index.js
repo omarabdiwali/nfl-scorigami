@@ -14,16 +14,16 @@ const geistMono = Geist_Mono({
 
 export default function Home() {
   const [fetchStatus, setFetchStatus] = useState("");
-  const [response, setResponse] = useState("");
+  const [result, setResult] = useState("");
   const [disabled, setDisabled] = useState(false);
 
   const getScorigami = () => {
     setDisabled(true);
-    setResponse("");
+    setResult("");
     setFetchStatus("Fetching...");
     fetch('/api/scorigami').then(res => res.json()).then(data => {
       setFetchStatus("Result:");
-      setResponse(data.result);
+      setResult(data.result);
       setDisabled(false);
     }).catch(err => console.error(err));
   }
@@ -43,11 +43,11 @@ export default function Home() {
           </li>
         </ol>
         <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <button disabled={disabled} onClick={getScorigami} className="cursor-pointer disabled:cursor-default disabled:opacity-20 rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto">
+          <button disabled={disabled} onClick={getScorigami} className="cursor-pointer disabled:cursor-default disabled:opacity-20 disabled:hover:bg-foreground rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto">
             Fetch Scorigami Data
           </button>
-          {(response || fetchStatus) && (
-            <p className="text-sm"><span className="text-green-500">{fetchStatus}</span> {response}</p>
+          {(result || fetchStatus) && (
+            <p className="text-sm"><span className="text-green-500">{fetchStatus}</span> {result}</p>
           )}
         </div>
       </main>
