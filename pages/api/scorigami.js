@@ -65,7 +65,6 @@ export default async function handler(req, res) {
     console.log(newTweets);
     res.status(200).json({ result: newTweets })
   } else {
-    console.log(`Nothing new...`);
     res.status(200).json({ result: "Nothing new..." });
   }
 }

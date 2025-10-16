@@ -47,6 +47,13 @@ const constructTweet = async (data) => {
     return gameScore + scorigami;
 }
 
+const validateContinuation = (lastScore, date, versus) => {
+    if (new Date(lastScore.date) - new Date(date) > 0) return 0;
+    if (versus == lastScore.versus && new Date(date) - new Date(lastScore.date) == 0) return 2;
+    if (new Date(date) - new Date(lastScore.date) > 0) return 1;
+    return 0;
+}
+
 const getScorigamiData = async (lastScore, year) => {
     await dbConnect();
     const tweetsToPost = [];
@@ -71,12 +78,11 @@ const getScorigamiData = async (lastScore, year) => {
         const scoreKey = `${winnerScore}-${loserScore}`;
         
         if (scoreKey == "-" && date == "Playoffs") continue;
-        if (!passedPrevScore && new Date(lastScore.date) - new Date(date) > 0) continue;
-        if (!passedPrevScore && versus == lastScore.versus && new Date(date) - new Date(lastScore.date) == 0) {
-            passedPrevScore = true;
-            continue;
+        if (!passedPrevScore) {
+            const cont = validateContinuation(lastScore, date, versus);
+            passedPrevScore = (cont == 1 || cont == 2);
+            if (cont == 0 || cont == 2) continue;
         }
-        if (!passedPrevScore) continue;
         if (scoreKey == "-") break;
         
         const constructData = { winner, loser, winnerScore, loserScore, versus, score: scoreKey, date: new Date(date) }
