@@ -36,14 +36,14 @@ const constructTweet = async (data) => {
         exists.versus = data.versus;
         exists.save();
     } else {
-        const totalScores = await Scores.countDocuments() + 1;
+        const totalScores = await Scores.countDocuments({}) - 1;
         scorigami = `That's Scorigami. It's the ${totalScores}${translateNumberEnding(totalScores)} unique final score in NFL History.`;
         const modelData = { score: data.score, versus: data.versus, date: new Date(data.date), count: 1 };
         await Scores.create(modelData).catch(err => console.log(err));
     }
 
     const lastGameData = { versus: data.versus, date: data.date };
-    await Scores.findOneAndUpdate({ score: "latest" }, lastGameData);
+    await Scores.findByIdAndUpdate(process.env.LATEST_ID, lastGameData);
     return gameScore + scorigami;
 }
 
