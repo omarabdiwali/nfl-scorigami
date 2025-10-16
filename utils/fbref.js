@@ -25,19 +25,19 @@ const translateNumberEnding = (number) => {
 
 const constructTweet = async (data) => {
     await dbConnect();
-    const gameScore = `${data.winner} (${data.winnerScore}) - ${data.loser} (${data.loserScore})\nFinal\n\n`;
+    const gameScore = `${data.winner} ${data.winnerScore} - ${data.loser} ${data.loserScore}\nFinal\n\n`;
     const exists = await Scores.findOne({ score: data.score });
     let scorigami = "";
     
     if (exists) {
-        scorigami = `No Scorigami. That score has happened ${exists.count} ${exists.count == 1 ? "time" : "times"} before, most recently on ${translateDate(new Date(exists.date))}, in the game ${exists.versus}.`
+        scorigami = `No Scorigami. That score has happened ${exists.count} ${exists.count == 1 ? "time" : "times"} before, most recently on ${translateDate(new Date(exists.date))} (${exists.versus}).`
         exists.count += 1;
         exists.date = new Date(data.date);
         exists.versus = data.versus;
         exists.save();
     } else {
         const totalScores = await Scores.countDocuments({}) - 1;
-        scorigami = `That's Scorigami. It's the ${totalScores}${translateNumberEnding(totalScores)} unique final score in NFL History.`;
+        scorigami = `That's Scorigami! It's the ${totalScores}${translateNumberEnding(totalScores)} unique final score in NFL History.`;
         const modelData = { score: data.score, versus: data.versus, date: new Date(data.date), count: 1 };
         await Scores.create(modelData).catch(err => console.log(err));
     }

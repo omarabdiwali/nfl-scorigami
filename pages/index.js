@@ -22,7 +22,7 @@ export default function Home() {
     setResponse("");
     setFetchStatus("Fetching...");
     fetch('/api/scorigami').then(res => res.json()).then(data => {
-      setFetchStatus("Fetch Result:");
+      setFetchStatus("Result:");
       setResponse(data.result);
       setDisabled(false);
     }).catch(err => console.error(err));
