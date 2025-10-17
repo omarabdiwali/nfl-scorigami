@@ -5,7 +5,13 @@ const getRequest = async (url) => {
     return await fetch(url).then(res => res.json()).then(data => { return data; });
 }
 
-const translateDate = (date) => {
+const translateDate = (stringDate) => {
+    const date = new Date(stringDate);
+    const localeDate = date.toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+    return new Date(localeDate);
+}
+
+const translateDateToString = (date) => {
     const allMonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const year = date.getUTCFullYear();
     const month = allMonths[date.getUTCMonth()];
@@ -29,7 +35,7 @@ const constructTweet = async (data) => {
     let scorigami = "";
     
     if (exists) {
-        scorigami = `No Scorigami. That score has happened ${exists.count} ${exists.count == 1 ? "time" : "times"} before, most recently on ${translateDate(new Date(exists.date))} (${exists.versus}).`
+        scorigami = `No Scorigami. That score has happened ${exists.count} ${exists.count == 1 ? "time" : "times"} before, most recently on ${translateDateToString(new Date(exists.date))} (${exists.versus}).`
         exists.count += 1;
         exists.date = new Date(data.date);
         exists.versus = data.versus;
@@ -47,9 +53,9 @@ const constructTweet = async (data) => {
 }
 
 const validateContinuation = (lastScore, date, versus) => {
-    if (new Date(lastScore.date) - new Date(date) > 0) return 0;
-    if (versus == lastScore.versus && new Date(date) - new Date(lastScore.date) == 0) return 2;
-    if (new Date(date) - new Date(lastScore.date) > 0) return 1;
+    if (new Date(lastScore.date) - date > 0) return 0;
+    if (versus == lastScore.versus && date - new Date(lastScore.date) == 0) return 2;
+    if (date - new Date(lastScore.date) > 0) return 1;
     return 0;
 }
 
@@ -76,7 +82,7 @@ const getScorigamiData = async () => {
         const gameData = {};
         const completed = event.status.type.completed;
         const date = event.date.substring(0, 10);
-        gameData.date = new Date(date);
+        gameData.date = translateDate(date);
 
         if (!completed) continue;
         if (!event.competitions[0] || !event.competitions[0].competitors) {
@@ -103,7 +109,7 @@ const getScorigamiData = async () => {
         const scoreKey = `${gameData.winnerScore}-${gameData.loserScore}`;        
         
         if (!passedLastScore) {
-            const cont = validateContinuation(lastScore, date, versus);
+            const cont = validateContinuation(lastScore, gameData.date, versus);
             passedLastScore = (cont == 1 || cont == 2);
             if (cont == 0 || cont == 2) continue;
         }
