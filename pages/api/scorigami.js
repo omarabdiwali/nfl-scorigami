@@ -1,5 +1,5 @@
 import dbConnect from "@/utils/dbConnect";
-import getScorigamiData from "@/utils/fbref";
+import getScorigamiData from "@/utils/fetchScores";
 import Scores from "@/utils/Scores.js";
 import { TwitterApi } from "twitter-api-v2";
 
@@ -25,10 +25,7 @@ const checkNewGames = async () => {
   try {
     await acquireLock();
     acquired = true;
-    await dbConnect();
-    const year = 2025;
-    const latestScore = await Scores.findById(process.env.LATEST_ID);
-    return await getScorigamiData(latestScore, year);
+    return await getScorigamiData();
   } catch (e) {
     console.log(e.message);
     return [];
