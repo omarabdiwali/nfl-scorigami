@@ -39,12 +39,12 @@ export default function Home() {
             Scorigami is a concept thought up by Jon Bois, referring to a score that has never been seen before in NFL history.
           </li>
           <li className="tracking-[-.01em]">
-            Click the button below to fetch the latest scorigami data, which will be tweeted from <a target="_blank" rel="noopener noreferrer" className="text-blue-200 hover:text-blue-400 hover:underline" href="https://x.com/NFLScorigamiBot">@NFLScorigamiBot</a>, and explore the fascinating world of NFL scores.
+            Click the button below to fetch the latest game data, check if a scorigami has occured, and tweet from <a target="_blank" rel="noopener noreferrer" className="text-blue-200 hover:text-blue-400 hover:underline" href="https://x.com/NFLScorigamiBot">@NFLScorigamiBot</a>, helping you explore the fascinating world of NFL scores.
           </li>
         </ol>
         <div className="flex gap-4 items-center flex-col sm:flex-row">
           <button disabled={disabled} onClick={getScorigami} className="cursor-pointer disabled:cursor-default disabled:opacity-20 disabled:hover:bg-foreground rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto">
-            Fetch Scorigami Data
+            Fetch Latest Game Data
           </button>
           {(result || fetchStatus) && (
             <p className="text-sm"><span className="text-green-500">{fetchStatus}</span> {result}</p>
