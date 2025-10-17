@@ -94,9 +94,12 @@ const getScorigamiData = async () => {
             if (team.winner && gameData.winner == undefined) {
                 gameData.winner = team.team.displayName;
                 gameData.winnerScore = team.score;
-            } else {
+            } else if (gameData.loser == undefined) {
                 gameData.loser = team.team.displayName;
                 gameData.loserScore = team.score;
+            } else {
+                gameData.winner = team.team.displayName;
+                gameData.winnerScore = team.score;
             }
         }
 

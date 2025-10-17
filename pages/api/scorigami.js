@@ -7,7 +7,7 @@ const acquireLock = async () => {
   await dbConnect();
   // using the 'count' field as the mutex, with 0 being its open, and 1 with it locked.
   const mutex = await Scores.findById(process.env.MUTEX_ID);
-  if (mutex.count == 1) throw Error("Mutex is currently locked.");
+  if (mutex.count == 1) throw new Error("Mutex is currently locked.");
   mutex.count = 1;
   mutex.save();
 }
