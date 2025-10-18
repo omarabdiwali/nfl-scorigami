@@ -1,7 +1,7 @@
 NFL Scorigami
 ================
 
-![Website](https://i.imgur.com/RfIKD0U.png)
+![Website](https://i.imgur.com/Lj9cSFn.png)
 
 ## Overview
 
