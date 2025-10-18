@@ -43,7 +43,6 @@ To set up the application, follow these steps:
 	* `ACCESS_TOKEN`: Twitter access token
 	* `ACCESS_TOKEN_SECRET`: Twitter access token secret
 	* `MONGODB_URI`: MongoDB connection string
-	* `LATEST_ID`: MongoDB Document ID, used to keep track of the last added game
 	* `MUTEX_ID`: MongoDB Document ID, used to limit the changes to one user at a time
 4. Start the application: `npm run dev`
 

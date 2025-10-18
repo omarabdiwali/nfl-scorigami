@@ -1,5 +1,6 @@
 import dbConnect from './dbConnect';
-import Scores from './Scores';
+import Scores from '@/models/Scores';
+import ProcessedGames from '@/models/ProcessedGames';
 
 const getRequest = async (url) => {
     return await fetch(url).then(res => res.json()).then(data => { return data; });
@@ -47,16 +48,7 @@ const constructTweet = async (data) => {
         await Scores.create(modelData).catch(err => console.log(err));
     }
 
-    const lastGameData = { versus: data.versus, date: data.date };
-    await Scores.findByIdAndUpdate(process.env.LATEST_ID, lastGameData);
     return gameScore + scorigami;
-}
-
-const validateContinuation = (lastScore, date, versus) => {
-    if (new Date(lastScore.date) - date > 0) return 0;
-    if (versus == lastScore.versus && date - new Date(lastScore.date) == 0) return 2;
-    if (date - new Date(lastScore.date) > 0) return 1;
-    return 0;
 }
 
 const validInfo = (data, keys) => {
@@ -66,25 +58,42 @@ const validInfo = (data, keys) => {
     return true;
 }
 
+const hasBeenProcessed = async (id) => {
+    try {
+        await dbConnect();
+        const processed = await ProcessedGames.findOne({ id })
+        return (processed != null);
+    } catch (e) {
+        console.log("Getting processed games failed!");
+        return null;
+    }
+}
+
+const addProcessedGame = async (id) => {
+    try {
+        await dbConnect();
+        await ProcessedGames.create({ id });
+    } catch (e) {
+        console.log(`Error adding processed game: ${e.message || e}`)
+    }
+}
+
 const getScorigamiData = async () => {
-    await dbConnect();
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    let passedLastScore = false;
-
     const tweetsToPost = [];
-    const lastScore = await Scores.findById(process.env.LATEST_ID);
     const url = "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard";
     const data = await getRequest(url);
     const keys = ["date", "winner", "winnerScore", "loser", "loserScore"];
     
     for (const event of data.events) {
         const gameData = {};
+        const id = event.id;
         const completed = event.status.type.completed;
         const date = event.date.substring(0, 10);
         gameData.date = translateDate(date);
 
-        if (!completed) continue;
+        if (!completed || hasBeenProcessed(id)) continue;
         if (!event.competitions[0] || !event.competitions[0].competitors) {
             console.log(`[FETCHSCORES] - Invalid check:\n${JSON.stringify(gameData, null, 2)}`);
             continue;
@@ -107,19 +116,12 @@ const getScorigamiData = async () => {
             console.log(`[FETCHSCORES] - Invalid info:\n${JSON.stringify(gameData, null, 2)}`);
             continue;
         }
-
-        const versus = `${gameData.winner} vs ${gameData.loser}`;
-        const scoreKey = `${gameData.winnerScore}-${gameData.loserScore}`;        
+      
+        gameData.versus = `${gameData.winner} vs ${gameData.loser}`;
+        gameData.score = `${gameData.winnerScore}-${gameData.loserScore}`;
         
-        if (!passedLastScore) {
-            const cont = validateContinuation(lastScore, gameData.date, versus);
-            passedLastScore = (cont == 1 || cont == 2);
-            if (cont == 0 || cont == 2) continue;
-        }
-
-        gameData.versus = versus;
-        gameData.score = scoreKey;
         const toTweet = await constructTweet(gameData);
+        await addProcessedGame(id);
         tweetsToPost.push(toTweet);
     }
 
@@ -128,7 +130,14 @@ const getScorigamiData = async () => {
 
 export default getScorigamiData;
 
+// Previous Implementation using Pro-Football-Reference
 
+// const validateContinuation = (lastScore, date, versus) => {
+//     if (new Date(lastScore.date) - date > 0) return 0;
+//     if (versus == lastScore.versus && date - new Date(lastScore.date) == 0) return 2;
+//     if (date - new Date(lastScore.date) > 0) return 1;
+//     return 0;
+// }
 // const getScorigamiData = async (lastScore, year) => {
 //     await dbConnect();
 //     const tweetsToPost = [];

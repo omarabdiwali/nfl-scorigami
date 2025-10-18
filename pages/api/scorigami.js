@@ -1,6 +1,6 @@
 import dbConnect from "@/utils/dbConnect";
 import getScorigamiData from "@/utils/fetchScores";
-import Scores from "@/utils/Scores.js";
+import Scores from "@/models/Scores.js";
 import { TwitterApi } from "twitter-api-v2";
 
 const acquireLock = async () => {
