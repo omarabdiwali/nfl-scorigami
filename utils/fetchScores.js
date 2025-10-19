@@ -6,7 +6,30 @@ const getRequest = async (url) => {
     return await fetch(url).then(res => res.json()).then(data => { return data; });
 }
 
-const translateDate = (stringDate) => {
+const getNestedProperty = (data, keys) => {
+    let current = data;
+    let prevKey = null;
+    const errorMessage = `Key '${keys.join(".")}' does not exist.`
+
+    for (const key of keys) {
+        if (current === null || current === undefined) throw new Error(`${errorMessage} Missing ${prevKey}.${key}.`);
+        current = current[key];
+        prevKey = key;
+    }
+
+    if (current === undefined) throw new Error(errorMessage);
+    return current;
+}
+
+const validateData = (data, keys) => {
+    for (const key of keys) {
+        if (data[key] === null || data[key] === undefined) {
+            throw new Error(`Missing data field '${key}': ${JSON.stringify(data, null, 2)}`);
+        }
+    }
+}
+
+const normalizeDate = (stringDate) => {
     const date = new Date(stringDate);
     const localeDate = date.toLocaleDateString("en-CA", { timeZone: "America/New_York" });
     return new Date(localeDate);
@@ -29,6 +52,25 @@ const translateNumberEnding = (number) => {
     return "th";
 }
 
+const hasBeenProcessed = async (id) => {
+    try {
+        await dbConnect();
+        const processed = await ProcessedGames.findOne({ id })
+        return (processed != null);
+    } catch (e) {
+        throw new Error("Getting processed games failed:", e.message || e);
+    }
+}
+
+const addProcessedGame = async (id) => {
+    try {
+        await dbConnect();
+        await ProcessedGames.create({ id });
+    } catch (e) {
+        throw new Error(`Error adding processed game ${id}:`, e.message || e);
+    }
+}
+
 const constructTweet = async (data) => {
     await dbConnect();
     const gameScore = `${data.winner} ${data.winnerScore} - ${data.loser} ${data.loserScore}\nFinal\n\n`;
@@ -48,131 +90,54 @@ const constructTweet = async (data) => {
         await Scores.create(modelData).catch(err => console.log(err));
     }
 
+    await addProcessedGame(data.id);
     return gameScore + scorigami;
 }
 
-const validInfo = (data, keys) => {
-    for (const key of keys) {
-        if (data[key] == null || data[key] == undefined) return false;
-    }
-    return true;
-}
-
-const hasBeenProcessed = async (id) => {
-    try {
-        await dbConnect();
-        const processed = await ProcessedGames.findOne({ id })
-        return (processed != null);
-    } catch (e) {
-        console.log("Getting processed games failed!");
-        return null;
-    }
-}
-
-const addProcessedGame = async (id) => {
-    try {
-        await dbConnect();
-        await ProcessedGames.create({ id });
-    } catch (e) {
-        console.log(`Error adding processed game: ${e.message || e}`)
-    }
-}
-
 const getScorigamiData = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    const tweetsToPost = [];
-    const url = "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard";
-    const data = await getRequest(url);
-    const keys = ["date", "winner", "winnerScore", "loser", "loserScore"];
-    
-    for (const event of data.events) {
-        const gameData = {};
-        const id = event.id;
-        const completed = event.status.type.completed;
-        const date = event.date.substring(0, 10);
-        gameData.date = translateDate(date);
-
-        if (!completed || hasBeenProcessed(id)) continue;
-        if (!event.competitions[0] || !event.competitions[0].competitors) {
-            console.log(`[FETCHSCORES] - Invalid check:\n${JSON.stringify(gameData, null, 2)}`);
-            continue;
-        }
-
-        for (const team of event.competitions[0].competitors) {
-            if (team.winner && gameData.winner == undefined) {
-                gameData.winner = team.team.displayName;
-                gameData.winnerScore = team.score;
-            } else if (gameData.loser == undefined) {
-                gameData.loser = team.team.displayName;
-                gameData.loserScore = team.score;
-            } else {
-                gameData.winner = team.team.displayName;
-                gameData.winnerScore = team.score;
-            }
-        }
-
-        if (!validInfo(gameData, keys)) {
-            console.log(`[FETCHSCORES] - Invalid info:\n${JSON.stringify(gameData, null, 2)}`);
-            continue;
-        }
-      
-        gameData.versus = `${gameData.winner} vs ${gameData.loser}`;
-        gameData.score = `${gameData.winnerScore}-${gameData.loserScore}`;
+        const keys = ["id", "date", "winner", "winnerScore", "loser", "loserScore"];
+        const tweetsToPost = [];
+        const url = "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard";
+        const data = await getRequest(url);
         
-        const toTweet = await constructTweet(gameData);
-        await addProcessedGame(id);
-        tweetsToPost.push(toTweet);
-    }
+        for (const event of data.events) {
+            const gameData = {};
+            const id = getNestedProperty(event, ["id"]);
+            const completed = getNestedProperty(event, ["status", "type", "completed"]);
+            const date = getNestedProperty(event, ["date"]).substring(0, 10);
 
-    return tweetsToPost;
+            gameData.id = id;
+            gameData.date = normalizeDate(date);
+
+            if (!completed || await hasBeenProcessed(id)) continue;
+            for (const team of getNestedProperty(event, ["competitions", 0, "competitors"])) {
+                if (getNestedProperty(team, ["winner"]) && gameData.winner == undefined) {
+                    gameData.winner = getNestedProperty(team, ["team", "displayName"]);
+                    gameData.winnerScore = getNestedProperty(team, ["score"]);
+                } else if (gameData.loser == undefined) {
+                    gameData.loser = getNestedProperty(team, ["team", "displayName"]);
+                    gameData.loserScore = getNestedProperty(team, ["score"]);
+                } else {
+                    gameData.winner = getNestedProperty(team, ["team", "displayName"]);
+                    gameData.winnerScore = getNestedProperty(team, ["score"]);
+                }
+            }
+
+            validateData(gameData, keys);
+            gameData.versus = `${gameData.winner} vs ${gameData.loser}`;
+            gameData.score = `${gameData.winnerScore}-${gameData.loserScore}`;
+            const tweet = await constructTweet(gameData);
+            tweetsToPost.push(tweet);
+        }
+
+        return tweetsToPost;
+    } catch (error) {
+        console.error("Error fetching scorigami data:", error.message || error);
+        return [];
+    }
 }
 
 export default getScorigamiData;
-
-// Previous Implementation using Pro-Football-Reference
-
-// const validateContinuation = (lastScore, date, versus) => {
-//     if (new Date(lastScore.date) - date > 0) return 0;
-//     if (versus == lastScore.versus && date - new Date(lastScore.date) == 0) return 2;
-//     if (date - new Date(lastScore.date) > 0) return 1;
-//     return 0;
-// }
-// const getScorigamiData = async (lastScore, year) => {
-//     await dbConnect();
-//     const tweetsToPost = [];
-//     let passedPrevScore = false;
-
-//     await new Promise((resolve) => setTimeout(resolve, 3000));
-
-//     const url = `https://www.pro-football-reference.com/years/${year}/games.htm#games`
-//     const data = await getRequest(url);
-//     const dom = new JSDOM(data);
-//     const doc = dom.window.document;
-//     const thElements = doc.querySelectorAll('th[scope="row"]');
-//     const trElements = Array.from(thElements).map(th => th.closest('tr'));
-
-//     for (const tr of trElements) {
-//         const date = tr.querySelector('td[data-stat="game_date"]').textContent;
-//         const winner = tr.querySelector('td[data-stat="winner"]').textContent.replace('*', '').trim();
-//         const loser = tr.querySelector('td[data-stat="loser"]').textContent;
-//         const winnerScore = tr.querySelector('td[data-stat="pts_win"]').textContent;
-//         const loserScore = tr.querySelector('td[data-stat="pts_lose"]').textContent;
-//         const versus = `${winner} vs ${loser}`;
-//         const scoreKey = `${winnerScore}-${loserScore}`;
-        
-//         if (scoreKey == "-" && date == "Playoffs") continue;
-//         if (!passedPrevScore) {
-//             const cont = validateContinuation(lastScore, date, versus);
-//             passedPrevScore = (cont == 1 || cont == 2);
-//             if (cont == 0 || cont == 2) continue;
-//         }
-//         if (scoreKey == "-") break;
-        
-//         const constructData = { winner, loser, winnerScore, loserScore, versus, score: scoreKey, date: new Date(date) }
-//         const toTweet = await constructTweet(constructData);
-//         tweetsToPost.push(toTweet);
-//     }
-
-//     return tweetsToPost;
-// }
