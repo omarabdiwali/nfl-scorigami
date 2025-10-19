@@ -71,14 +71,27 @@ const addProcessedGame = async (id) => {
     }
 }
 
+const orderValues = (data, winnerFirst, prevScore=true) => {
+    if (prevScore) {
+        const teams = data.split(" vs ");
+        if (winnerFirst) return data;
+        else return `${teams.at(1)} vs ${teams.at(0)}`;
+    } else {
+        if (winnerFirst) return `${data.winner} ${data.winnerScore} - ${data.loser} ${data.loserScore}`;
+        else return `${data.loser} ${data.loserScore} - ${data.winner} ${data.winnerScore}`
+    }
+}
+
 const constructTweet = async (data) => {
     await dbConnect();
-    const gameScore = `${data.winner} ${data.winnerScore} - ${data.loser} ${data.loserScore}\nFinal\n\n`;
+    const gameScore = `${orderValues(data, data.winnerFirst, false)}\nFinal\n\n`;
     const exists = await Scores.findOne({ score: data.score });
     let scorigami = "";
     
     if (exists) {
-        scorigami = `No Scorigami. That score has happened ${exists.count} ${exists.count == 1 ? "time" : "times"} before, most recently on ${translateDateToString(new Date(exists.date))} (${exists.versus}).`
+        const stringDate = translateDateToString(new Date(exists.date));
+        const lastGame = orderValues(exists.versus, data.winnerFirst);
+        scorigami = `No Scorigami. That score has happened ${exists.count} ${exists.count == 1 ? "time" : "times"} before, most recently on ${stringDate} (${lastGame}).`
         exists.count += 1;
         exists.date = new Date(data.date);
         exists.versus = data.versus;
@@ -104,6 +117,7 @@ const getScorigamiData = async () => {
         const data = await getRequest(url);
         
         for (const event of data.events) {
+            let winnerFirst = true;
             const gameData = {};
             const id = getNestedProperty(event, ["id"]);
             const completed = getNestedProperty(event, ["status", "type", "completed"]);
@@ -120,6 +134,7 @@ const getScorigamiData = async () => {
                 } else if (gameData.loser == undefined) {
                     gameData.loser = getNestedProperty(team, ["team", "displayName"]);
                     gameData.loserScore = getNestedProperty(team, ["score"]);
+                    winnerFirst = (gameData.winner !== undefined)
                 } else {
                     gameData.winner = getNestedProperty(team, ["team", "displayName"]);
                     gameData.winnerScore = getNestedProperty(team, ["score"]);
@@ -129,6 +144,7 @@ const getScorigamiData = async () => {
             validateData(gameData, keys);
             gameData.versus = `${gameData.winner} vs ${gameData.loser}`;
             gameData.score = `${gameData.winnerScore}-${gameData.loserScore}`;
+            gameData.winnerFirst = winnerFirst;
             const tweet = await constructTweet(gameData);
             tweetsToPost.push(tweet);
         }
