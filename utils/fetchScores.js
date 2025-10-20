@@ -77,14 +77,14 @@ const orderValues = (data, winnerFirst, prevScore=true) => {
         if (winnerFirst) return data;
         else return `${teams.at(1)} vs ${teams.at(0)}`;
     } else {
-        if (winnerFirst) return `${data.winner} ${data.winnerScore} - ${data.loser} ${data.loserScore}`;
-        else return `${data.loser} ${data.loserScore} - ${data.winner} ${data.winnerScore}`
+        if (winnerFirst) return `${data.winner} ${data.winnerScore}\n${data.loser} ${data.loserScore}`;
+        else return `${data.loser} ${data.loserScore}\n${data.winner} ${data.winnerScore}`
     }
 }
 
 const constructTweet = async (data) => {
     await dbConnect();
-    const gameScore = `${orderValues(data, data.winnerFirst, false)}\nFinal\n\n`;
+    const gameScore = `${orderValues(data, data.winnerFirst, false)}\n\n`;
     const exists = await Scores.findOne({ score: data.score });
     let scorigami = "";
     
