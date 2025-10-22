@@ -13,10 +13,10 @@ The Scorigami project consists of multiple sub-projects, each tracking a differe
 
 * **NBA Scorigami**: Tracks unique NBA scores and tweets from [@NBAScorigamis](https://x.com/NBAScorigamis)
 	+ Visit the website at: https://scorigami-nba.vercel.app
-	+ Source code: [nba](https://github.com/omarabdiwali/scorigami/tree/main/nba)
+	+ [Source code](https://github.com/omarabdiwali/scorigami/tree/main/nba)
 * **NFL Scorigami**: Tracks unique NFL scores and tweets from [@NFLScorigamiBot](https://x.com/NFLScorigamiBot)
 	+ Visit the website at: https://nfl-scorigami.vercel.app
-	+ Source code: [nfl](https://github.com/omarabdiwali/scorigami/tree/main/nfl)
+	+ [Source code](https://github.com/omarabdiwali/scorigami/tree/main/nfl)
 
 ## Technical Details
 
