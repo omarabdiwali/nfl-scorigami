@@ -6,6 +6,6 @@ const ProcessedGamesSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
-});
+}, { timestamps: true });
 
 export default mongoose.models.ProcessedGames || mongoose.model('ProcessedGames', ProcessedGamesSchema);

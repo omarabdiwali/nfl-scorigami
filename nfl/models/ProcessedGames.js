@@ -1,0 +1,11 @@
+import mongoose from 'mongoose';
+
+const ProcessedGamesSchema = new mongoose.Schema({
+  id: {
+    type: String,
+    required: true,
+    unique: true
+  },
+}, { timestamps: true });
+
+export default mongoose.models.ProcessedGames || mongoose.model('ProcessedGames', ProcessedGamesSchema);
