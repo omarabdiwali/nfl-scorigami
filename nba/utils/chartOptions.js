@@ -1,7 +1,8 @@
 import { ChartsTooltipContainer, useItemTooltip } from '@mui/x-charts';
 import { Box, Typography } from '@mui/material';
 
-const square = 'M-4,-4L4,-4L4,4L-4,4Z';
+// const square = 'M-4,-4L4,-4L4,4L-4,4Z';
+const square = 'M 0, 0 m -4, 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0';
 const gradientColors = [
   '#0769c6',
   '#33ccff',
