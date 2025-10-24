@@ -56,6 +56,12 @@ const tweetScores = async (tweets) => {
 }
 
 export default async function handler(req, res) {
+  const { token } = req.body;
+  if (token !== process.env.LAMBDA_TOKEN) {
+    res.status(200).json({ result: "Invalid authentication..." });
+    return;
+  }
+  
   const tweetData = await checkNewGames();
   if (tweetData.length > 0) {
     const newTweets = await tweetScores(tweetData);
