@@ -97,8 +97,8 @@ const constructTweet = async (data) => {
         exists.versus = data.versus;
         exists.save();
     } else {
-        const totalScores = await NBAScores.countDocuments({}) - 1;
-        scorigami = `That's Scorigami! It's the ${totalScores}${translateNumberEnding(totalScores)} unique final score in NFL History.`;
+        const totalScores = await NBAScores.countDocuments({});
+        scorigami = `That's Scorigami!! It's the ${totalScores}${translateNumberEnding(totalScores)} unique final score in NBA History!`;
         const modelData = { score: data.score, versus: data.versus, date: new Date(data.date), count: 1 };
         await NBAScores.create(modelData).catch(err => console.log(err));
     }
