@@ -1,8 +1,8 @@
 import { ChartsTooltipContainer, useItemTooltip } from '@mui/x-charts';
 import { Box, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 
-// const square = 'M-4,-4L4,-4L4,4L-4,4Z';
-const square = 'M 0, 0 m -4, 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0';
+const circle = 'M 0, 0 m -4, 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0';
 const gradientColors = [
   '#0769c6',
   '#33ccff',
@@ -63,6 +63,7 @@ export function CustomMarker({
 }) {
   const width = window.innerWidth * 0.95;
   const markerSize = width > 1100 ? 4 : (width / 1100) * 4;
+  const [highlighted, setHighlighted] = useState(isHighlighted);
   const props = {
     x: 0,
     y: 0,
@@ -74,11 +75,27 @@ export function CustomMarker({
     ...other,
   };
 
+  useEffect(() => {
+    const handleTooltipShown = (ev) => {
+      setHighlighted(ev.detail == seriesId)
+    }
+    const handleTooltipHidden = () => {
+      setHighlighted(false);
+    }
+
+    document.addEventListener('tooltipShown', handleTooltipShown);
+    document.addEventListener('tooltipHidden', handleTooltipHidden);
+    return () => {
+      document.removeEventListener('tooltipShown', handleTooltipShown);
+      document.removeEventListener('tooltipHidden', handleTooltipHidden);
+    }
+  }, [seriesId])
+  
   return (
     <g {...props}>
       <path
-        d={square}
-        transform={`scale(${(isHighlighted ? 1.2 : 1) * markerSize / 8})`}
+        d={circle}
+        transform={`scale(${(highlighted ? 1.7 : 1) * markerSize / 8})`}
       />
     </g>
   );
@@ -87,10 +104,15 @@ export function CustomMarker({
 export function CustomTooltip() {
   const item = useItemTooltip();
   if (!item || !item.value) {
+    const event = new CustomEvent('tooltipHidden');
+    document.dispatchEvent(event);
     return (
       <ChartsTooltipContainer sx={{ display: "none" }}>
       </ChartsTooltipContainer>
     )
+  } else {
+    const event = new CustomEvent('tooltipShown', { detail: item.identifier.seriesId });
+    document.dispatchEvent(event);
   }
 
   return (

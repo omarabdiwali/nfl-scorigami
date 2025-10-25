@@ -81,7 +81,7 @@ export default function ScorigamiChart() {
       className='mt-6'
       height={chartSize.height}
       width={chartSize.width}
-      voronoiMaxRadius={5}
+      voronoiMaxRadius={'item'}
       slots={{ marker: CustomMarker, tooltip: CustomTooltip }}
       grid={{ horizontal: true, vertical: true }}
       series={series}

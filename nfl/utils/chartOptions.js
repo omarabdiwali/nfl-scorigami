@@ -1,5 +1,6 @@
 import { ChartsTooltipContainer, useItemTooltip } from '@mui/x-charts';
 import { Box, Typography } from '@mui/material';
+import { useState, useEffect } from 'react';
 
 const circle = 'M 0, 0 m -4, 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0';
 const gradientColors = [
@@ -60,6 +61,7 @@ export function CustomMarker({
   color,
   ...other
 }) {
+  const [highlighted, setHighlighted] = useState(isHighlighted);
   const width = Math.min(650, window.innerWidth * 0.9);
   const markerSize = width == 650 ? 7 : (width / 650) * 7;
   const props = {
@@ -73,11 +75,27 @@ export function CustomMarker({
     ...other,
   };
 
+  useEffect(() => {
+    const handleTooltipShown = (ev) => {
+      setHighlighted(ev.detail == seriesId);
+    }
+    const handleTooltipHidden = () => {
+      setHighlighted(false);
+    }
+
+    document.addEventListener('tooltipShown', handleTooltipShown);
+    document.addEventListener('tooltipHidden', handleTooltipHidden);
+    return () => {
+      document.removeEventListener('tooltipShown', handleTooltipShown);
+      document.removeEventListener('tooltipHidden', handleTooltipHidden);
+    }
+  }, [seriesId])
+
   return (
     <g {...props}>
       <path
         d={circle}
-        transform={`scale(${(isHighlighted ? 1.2 : 1) * markerSize / 8})`}
+        transform={`scale(${(highlighted ? 1.7 : 1) * markerSize / 8})`}
       />
     </g>
   );
@@ -86,10 +104,15 @@ export function CustomMarker({
 export function CustomTooltip() {
   const item = useItemTooltip();
   if (!item || !item.value) {
+    const event = new CustomEvent('tooltipHidden');
+    document.dispatchEvent(event);
     return (
       <ChartsTooltipContainer sx={{ display: "none" }}>
       </ChartsTooltipContainer>
     )
+  } else {
+    const event = new CustomEvent('tooltipShown', { detail: item.identifier.seriesId });
+    document.dispatchEvent(event);
   }
 
   return (
