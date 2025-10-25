@@ -12,7 +12,7 @@ export default function ScorigamiChart() {
     for (const doc of docs) {
       const series = {};
       const data = addData(doc);
-      series.color = valueToColor(data.count, 1, 70);
+      series.color = valueToColor(data.count, 1, 90);
       series.data = [data];
       seriesData.push(series);
     }
