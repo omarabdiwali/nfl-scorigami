@@ -32,7 +32,7 @@ export default function Home() {
       </main>
       <ScorigamiChart />
       
-      <footer className="row-start-3 mt-10 flex flex-wrap items-center justify-center">
+      <footer className="row-start-3 mt-10 flex flex-wrap items-center justify-center gap-4">
         <a
           className="flex items-center gap-2 hover:underline hover:underline-offset-4"
           href="https://en.wikipedia.org/wiki/Scorigami"
@@ -43,10 +43,41 @@ export default function Home() {
             aria-hidden
             src="/globe.svg"
             alt="Globe icon"
-            width={16}
-            height={16}
+            width={20}
+            height={20}
           />
-          Learn more about Scorigami on Wikipedia
+          Learn more about Scorigami
+        </a>
+        <a
+          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+          href="https://scorigami-nba.vercel.app"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Image
+            aria-hidden
+            src="/basketball.svg"
+            alt="Basketball icon"
+            color="white"
+            width={24}
+            height={24}
+          />
+          NBA Scorigami
+        </a>
+        <a
+          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+          href="https://github.com/omarabdiwali/scorigami"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Image
+            aria-hidden
+            src="/github.svg"
+            alt="GitHub icon"
+            width={20}
+            height={20}
+          />
+          Source Code
         </a>
       </footer>
     </div>
