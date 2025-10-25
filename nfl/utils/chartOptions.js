@@ -138,6 +138,7 @@ export function CustomTooltip() {
         </Typography>
         <Typography variant="body2">
           <strong>Last Occurrence:</strong> {new Date(item.value.lastTime).toLocaleDateString("en-US", {
+            timeZone: 'UTC',
             year: 'numeric',
             month: 'short',
             day: 'numeric'
