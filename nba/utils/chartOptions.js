@@ -61,7 +61,8 @@ export function CustomMarker({
   color,
   ...other
 }) {
-  const markerSize = window.innerWidth * 0.95 > 1000 ? 4 : (1000 / window.innerWidth) * 4;
+  const width = window.innerWidth * 0.95;
+  const markerSize = width > 1100 ? 4 : (width / 1100) * 4;
   const props = {
     x: 0,
     y: 0,
