@@ -23,9 +23,12 @@ export default function Home() {
             Welcome to NFL Scorigami, a web application that tracks unique NFL scores. 
             Scorigami is a concept thought up by Jon Bois, referring to a score that has never been seen before in a sport&apos;s history.
           </li>
-          <li className="tracking-[-.01em]">
+          <li className="mb-2 tracking-[-.01em]">
             The latest game scores are automatically checked every minute on gamedays. If a scorigami occurs, 
-            it will be tweeted from <a target="_blank" rel="noopener noreferrer" className="text-blue-200 hover:text-blue-400 hover:underline" href="https://x.com/NFLScorigamiBot">@NFLScorigamiBot</a>. 
+            it will be tweeted from <a target="_blank" rel="noopener noreferrer" className="text-blue-200 hover:text-blue-400 hover:underline" href="https://x.com/NFLScorigamiBot">@NFLScorigamiBot</a>
+          </li>
+          <li className="tracking-[-.01em]">
+            The data collected starts from the 1920 APFA (NFL) season, and includes the AAFC and AFL games.
             The chart below, showcasing all unique scores throughout the NFL&apos;s history, is updated daily.
           </li>
         </ol>

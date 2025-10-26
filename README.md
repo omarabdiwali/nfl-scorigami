@@ -11,10 +11,10 @@ Scorigami is a collection of web applications that track unique scores in variou
 
 The Scorigami project consists of multiple sub-projects, each tracking a different sport:
 
-* **NBA Scorigami**: Tracks unique NBA scores and tweets from [@NBAScorigamis](https://x.com/NBAScorigamis)
+* **NBA Scorigami**: Tracks unique NBA scores and tweets from [@ScorigamiNBA_](https://x.com/ScorigamiNBA_)
 	+ Visit the website at: https://scorigami-nba.vercel.app
 	+ [Source code](https://github.com/omarabdiwali/scorigami/tree/main/nba)
-	+ The application checks for new game scores every 2 minutes and tweets new scores from the [@NBAScorigamis](https://x.com/NBAScorigamis) Twitter account if a scorigami occurs.
+	+ The application checks for new game scores every 2 minutes and tweets new scores from the [@ScorigamiNBA_](https://x.com/ScorigamiNBA_) Twitter account if a scorigami occurs.
 * **NFL Scorigami**: Tracks unique NFL scores and tweets from [@NFLScorigamiBot](https://x.com/NFLScorigamiBot)
 	+ Visit the website at: https://nfl-scorigami.vercel.app
 	+ [Source code](https://github.com/omarabdiwali/scorigami/tree/main/nfl)

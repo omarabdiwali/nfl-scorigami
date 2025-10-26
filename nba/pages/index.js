@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Geist, Geist_Mono } from "next/font/google";
 import ScorigamiChart from "@/components/ScorigamiChart";
+import { useEffect } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,9 +24,12 @@ export default function Home() {
             Welcome to NBA Scorigami, a web application that tracks unique NBA scores. 
             Scorigami is a concept thought up by Jon Bois, referring to a score that has never been seen before in a sport&apos;s history.
           </li>
-          <li className="tracking-[-.01em]">
+          <li className="mb-2 tracking-[-.01em]">
             The latest game scores are automatically checked every 2 minutes. If a scorigami occurs, 
-            it will be tweeted from <a target="_blank" rel="noopener noreferrer" className="text-blue-200 hover:text-blue-400 hover:underline" href="https://x.com/NBAScorigamis">@NBAScorigamis</a>. 
+            it will be tweeted from <a target="_blank" rel="noopener noreferrer" className="text-blue-200 hover:text-blue-400 hover:underline" href="https://x.com/ScorigamiNBA_">@ScorigamiNBA_</a>
+          </li>
+          <li className="tracking-[-.01em]">
+            The data collected starts from the 1946 NBA season, and includes the ABA seasons (1967-76).
             The chart below, showcasing all unique scores throughout NBA&apos;s history, is updated daily.
           </li>
         </ol>

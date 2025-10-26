@@ -79,6 +79,9 @@ export default function ScorigamiChart() {
   return (
     <ScatterChart
       className='mt-6'
+      sx={{
+        '& .MuiChartsGrid-line': { stroke: '#191818ff', opacity: 0.8 },
+      }}
       height={chartSize.height}
       width={chartSize.width}
       voronoiMaxRadius={'item'}
