@@ -30,7 +30,9 @@ export default function Home() {
           </li>
           <li className="tracking-[-.01em]">
             The data collected starts from the 1946 NBA season, and includes the ABA seasons (1967-76).
-            The chart below, showcasing all unique scores throughout NBA&apos;s history, is updated daily.
+            The chart below, showcasing all unique scores throughout NBA&apos;s history, is updated daily. 
+            Please note that the dates displayed are based on the Eastern Time (ET) timezone. 
+            Historical data prior to modern record-keeping did not have precise start times, so ET is used as a standard reference.
           </li>
         </ol>
       </main>

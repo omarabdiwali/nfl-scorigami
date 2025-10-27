@@ -92,13 +92,11 @@ export default function ScorigamiChart() {
         label: 'Winner', 
         labelStyle: { fill: 'white' }, 
         tickLabelStyle: { fill: 'white' },
-        zoom: true
       }]}
       xAxis={[{ 
         label: 'Loser', 
         labelStyle: { fill: 'white' }, 
         tickLabelStyle: { fill: 'white' },
-        zoom: true
       }]}
     />
   )

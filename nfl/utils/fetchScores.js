@@ -32,7 +32,7 @@ const validateData = (data, keys) => {
 const normalizeDate = (stringDate) => {
     const date = new Date(stringDate);
     const localeDate = date.toLocaleDateString("en-CA", { timeZone: "America/New_York" });
-    return new Date(localeDate);
+    return new Date(localeDate + "T12:00Z");
 }
 
 const translateDateToString = (date) => {
@@ -121,7 +121,7 @@ const getScorigamiData = async () => {
             const gameData = {};
             const id = getNestedProperty(event, ["id"]);
             const completed = getNestedProperty(event, ["status", "type", "completed"]);
-            const date = getNestedProperty(event, ["date"]).substring(0, 10);
+            const date = getNestedProperty(event, ["date"]);
 
             gameData.id = id;
             gameData.date = normalizeDate(date);
