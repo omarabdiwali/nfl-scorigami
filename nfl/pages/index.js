@@ -28,7 +28,7 @@ export default function Home() {
             it will be tweeted from <a target="_blank" rel="noopener noreferrer" className="text-blue-200 hover:text-blue-400 hover:underline" href="https://x.com/NFLScorigamiBot">@NFLScorigamiBot</a>
           </li>
           <li className="tracking-[-.01em]">
-            The data collected starts from the 1920 APFA (NFL) season, and includes the AAFC and AFL games.
+            The data collected starts from the 1920 APFA (NFL) season, and includes the AAFC and AFL seasons as well.
             The chart below, showcasing all unique scores throughout the NFL&apos;s history, is updated daily. 
             Please note that the dates displayed are based on the Eastern Time (ET) timezone. 
             Historical data prior to modern record-keeping did not have precise start times, so ET is used as a standard reference.

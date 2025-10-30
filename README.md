@@ -48,7 +48,6 @@ To set up a sub-project, navigate to its directory and follow the setup instruct
 	* `ACCESS_TOKEN`: Twitter access token
 	* `ACCESS_TOKEN_SECRET`: Twitter access token secret
 	* `MONGODB_URI`: MongoDB connection string
-	* `MUTEX_ID`: MongoDB Document ID, used to limit the changes to one user at a time
 5. Start the application: `npm run dev`
 
 ## Usage
