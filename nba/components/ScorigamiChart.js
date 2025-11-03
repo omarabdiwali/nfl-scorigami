@@ -35,7 +35,7 @@ export default function ScorigamiChart() {
     const handleResize = () => {
       setChartSize({ 
         width: window.innerWidth * 0.95,
-        height: window.innerHeight
+        height: window.innerHeight * 0.95
       })
     }
     window.addEventListener("resize", handleResize);
@@ -54,7 +54,7 @@ export default function ScorigamiChart() {
         setSeries(series);
         setChartSize({
           width: window.innerWidth * 0.95,
-          height: window.innerHeight
+          height: window.innerHeight * 0.95
         })
         setLoading(false);
       })
@@ -62,7 +62,7 @@ export default function ScorigamiChart() {
       setSeries(localData);
       setChartSize({
         width: window.innerWidth * 0.95,
-        height: window.innerHeight
+        height: window.innerHeight * 0.95
       })
       setLoading(false);
     }
