@@ -44,11 +44,11 @@ const translateDateToString = (date) => {
     return `${month} ${day}, ${year}`;
 }
 
-const translateNumberEnding = (number) => {
+const ordinalEnding = (number) => {
     const i = number % 10, j = number % 100;
-    if (i == 1 || j !== 11) return "st";
-    if (i == 2 || j !== 12) return "nd";
-    if (i == 3 || j !== 13) return "rd";
+    if (i == 1 && j !== 11) return "st";
+    if (i == 2 && j !== 12) return "nd";
+    if (i == 3 && j !== 13) return "rd";
     return "th";
 }
 
@@ -98,7 +98,7 @@ const constructTweet = async (data) => {
         exists.save();
     } else {
         const totalScores = await Scores.countDocuments({});
-        scorigami = `That's Scorigami!! It's the ${totalScores}${translateNumberEnding(totalScores)} unique final score in NFL History!`;
+        scorigami = `That's Scorigami!! It's the ${totalScores}${ordinalEnding(totalScores)} unique final score in NFL History!`;
         const modelData = { score: data.score, versus: data.versus, date: new Date(data.date), count: 1 };
         await Scores.create(modelData).catch(err => console.log(err));
     }
